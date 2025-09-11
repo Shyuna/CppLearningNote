@@ -1,0 +1,4 @@
+ToolSet: 6.0 w64 (local)@D:\softwares\clion\x86_64-8.1.0-release-posix-seh-rt_v6-rev0\mingw64
+Options: 
+
+Options:-DCMAKE_MAKE_PROGRAM=D:/softwares/clion/addr/CLion 2023.3.4/bin/ninja/win/x64/ninja.exe
