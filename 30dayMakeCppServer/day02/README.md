@@ -1,0 +1,3 @@
+- 使用`write`，`read`，`close`函数需要添加头文件`#include <unistd.h>`
+- `bzero(&buffer, sizeof(buffer));`将buffer置零，清空缓冲区
+- 最后记得`close(socket_fd)`关闭socket
