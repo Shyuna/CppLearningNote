@@ -9,5 +9,5 @@
   将IO口放入epoll红黑树中，监听IO上的事件：`epoll_ctl(epfd, EPOLL_CTL_ADD, sockfd, &ev);`
 
   获取有事件发生的fd：`int nfds = epoll_wait(epfd, events, MAX_EVENTS, -1);`
-- `read()`函数返回-1时，通过`(errno == EAGAIN) || (errno == EWOULDBLOCK)`判断是否是非阻塞IO数据读取完毕，继续使用`epoll_wait`等待
+- `read()`函数返回-1时，通过`(errno == EAGAIN) || (errno == EWOULDBLOCK)`判断是否非阻塞模式下，缓冲区无数据可读
 - `read()`函数返回0时，使用`close(events[i].data.fd);`关闭socket，自动将文件描述符从epoll树上移除
