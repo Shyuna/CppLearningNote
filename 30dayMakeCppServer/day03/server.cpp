@@ -81,16 +81,16 @@ int main()
                     }
                     else if (read_code == 0)
                     {
-                        std::cout << "Client fd "<<events[i].data.fd<<" disconnected!" << std::endl;
+                        std::cout << "Client fd " << events[i].data.fd << " disconnected!" << std::endl;
                         close(events[i].data.fd);
                         break;
                     }
-                    else if ((read_code == -1) && (errno & EAGAIN) | (errno & EWOULDBLOCK))  // 非阻塞模式下，缓冲区无数据可读，返回-1，设置errno
+                    else if ((read_code == -1) && (errno & EAGAIN) | (errno & EWOULDBLOCK)) // 非阻塞模式下，缓冲区无数据可读，返回-1，设置errno
                     {
                         std::cout << "Read once completed!" << std::endl;
                         break;
                     }
-                    else if ((read_code == -1) && (errno & EINTR))  // 输入被中断的情况，continue继续读取输入
+                    else if ((read_code == -1) && (errno & EINTR)) // 输入被中断的情况，continue继续读取输入
                     {
                         std::cout << "Read Interupted!" << std::endl;
                         continue;
