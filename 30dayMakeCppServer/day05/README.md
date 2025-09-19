@@ -1,0 +1,4 @@
+- `epoll_event`结构中原本存储的是需要监听的`fd`，现修改为指向一个`Channel`对象的指针。
+- 需要监听的`fd`、`epoll_event.event`都由Channel对象封装，使用`epoll_wait`时需要设置`Channel`对象这些对应成员的值。
+- 实现`Epoll::poll`获取得到Channel。
+- 实现`Epoll::updateChannel`时，若`channel`不在`Epoll`中，添加进红黑树后，调用`channel->setInEpoll();`设置。
