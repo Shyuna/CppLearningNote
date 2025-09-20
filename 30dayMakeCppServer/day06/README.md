@@ -1,0 +1,3 @@
+- 添加EventLoop类封装管理Epoll，修改channel和server中对应的epoll指针为EventLoop指针，使用EventLoop对channel做更新和循环监听。
+- 在channel中增加回调函数，server和client第一次建立连接时设置回调函数，当poll获取到 channel后调用对应的回调函数。
+- 使用setCallback函数设置回调函数时，lambda表达式要用值捕获，否则函数结束后局部变量指针被销毁，引用捕获的指针失效。
