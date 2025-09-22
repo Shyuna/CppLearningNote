@@ -1,0 +1,3 @@
+- 添加`Acceptor`类封装管理`Server Socket`，实现创建`server socket`和设置`channel`的回调函数。
+- `Acceptor`类析构函数增加对`server_sock`、`server_addr`、`server_channel`的释放，避免内存泄漏。
+- 构造`Acceptor`时使用的`EventLoop`由`Server`传入。
