@@ -29,48 +29,6 @@ Server::~Server()
     delete acceptor;
 }
 
-void Server::handleReadEvent(int fd)
-{
-    char buffer[READ_BUFFER];
-    while (true)
-    {
-        bzero(&buffer, sizeof(buffer));
-        ssize_t read_code = read(fd, &buffer, sizeof(buffer));
-        if (read_code > 0)
-        {
-            std::cout << "Received " << buffer << " from fd " << fd << std::endl;
-            ssize_t write_code = write(fd, &buffer, sizeof(buffer));
-
-            if (write_code == -1)
-            {
-                errif(true, "Error: write failed!");
-                break;
-            }
-        }
-        else if (read_code == 0)
-        {
-            std::cout << "Client fd " << fd << " disconnected!" << std::endl;
-            close(fd);
-            break;
-        }
-        else if ((read_code == -1) && (errno & EAGAIN) | (errno & EWOULDBLOCK)) // 非阻塞模式下，缓冲区无数据可读，返回-1，设置errno
-        {
-            std::cout << "Read once completed!" << std::endl;
-            break;
-        }
-        else if ((read_code == -1) && (errno & EINTR)) // 输入被中断的情况，continue继续读取输入
-        {
-            std::cout << "Read Interupted!" << std::endl;
-            continue;
-        }
-        else
-        {
-            std::cout << "Error: something undefined happened!" << std::endl;
-            close(fd);
-        }
-    }
-}
-
 void Server::newConnection(Socket *client_sock)
 {
     Connection *client_connect = new Connection(loop, client_sock);
