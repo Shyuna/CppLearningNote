@@ -1,3 +1,4 @@
+#include <functional>
 #include <cstring>
 #include <functional>
 #include <iostream>
@@ -8,20 +9,25 @@
 #include "util.h"
 #include "Epoll.h"
 #include "InetAddress.h"
-#include "Socket.h"
-#include "Channel.h"
-#include "Acceptor.h"
 #include "Server.h"
+#include "Socket.h"
+#include "Acceptor.h"
+#include "Connection.h"
+#include "Channel.h"
 
 #define READ_BUFFER 1024
 
 Server::Server(EventLoop *loop) : loop(loop)
 {
-    Acceptor* acceptor=new Acceptor(loop);
-    acceptor->setNewConnectionCallback([=](Socket *serv_sock){return newConnection(serv_sock);});
+    acceptor = new Acceptor(loop);
+    acceptor->setNewConnectionCallback([=](Socket *sock)
+                                       { newConnection(sock); });
 }
 
-Server::~Server() {}
+Server::~Server()
+{
+    delete acceptor;
+}
 
 void Server::handleReadEvent(int fd)
 {
@@ -65,14 +71,16 @@ void Server::handleReadEvent(int fd)
     }
 }
 
-void Server::newConnection(Socket *serv_sock)
+void Server::newConnection(Socket *client_sock)
 {
-    InetAddress *client_addr = new InetAddress();
-    Socket *client_sock = new Socket(serv_sock->accept(client_addr));
-    client_sock->setnonblocking();
-    Channel *client_channel = new Channel(loop, client_sock->getFd());
-    client_channel->enableReading();
-    std::cout << "connected fd " << client_sock->getFd() << ", addr " << inet_ntoa(client_addr->addr.sin_addr) << ", port " << ntohs(client_addr->addr.sin_port) << std::endl;
-    client_channel->setCallback([=]()
-                                { return handleReadEvent(client_channel->getFd()); });
+    Connection *client_connect = new Connection(loop, client_sock);
+    connections.insert({client_sock->getFd(), client_connect});
+    client_connect->setDeleteConnectionCallback([=](Socket *sock)
+                                                { deleteConnection(sock); });
+}
+
+void Server::deleteConnection(Socket *sock)
+{
+    delete connections[sock->getFd()];
+    connections.erase(sock->getFd());
 }

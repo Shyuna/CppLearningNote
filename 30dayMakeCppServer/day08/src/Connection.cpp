@@ -1,29 +1,31 @@
 #include <cstring>
-#include <functional>
 #include <iostream>
-#include <vector>
 #include <unistd.h>
-#include <fcntl.h>
-#include <errno.h>
-#include "util.h"
-#include "Epoll.h"
-#include "InetAddress.h"
+#include "Connection.h"
 #include "Socket.h"
 #include "Channel.h"
-#include "Acceptor.h"
-#include "Server.h"
+#include "util.h"
 
 #define READ_BUFFER 1024
 
-Server::Server(EventLoop *loop) : loop(loop)
+Connection::Connection(EventLoop *_loop, Socket *_sock) : loop(_loop), sock(_sock)
 {
-    Acceptor* acceptor=new Acceptor(loop);
-    acceptor->setNewConnectionCallback([=](Socket *serv_sock){return newConnection(serv_sock);});
+    sock->setnonblocking();
+    channel = new Channel(loop, sock->getFd());
+    channel->enableReading();
+    channel->setCallback([=]()
+                         { return echo(channel->getFd()); });
 }
 
-Server::~Server() {}
+Connection::~Connection()
+{
+    deleteConnectionCallback(sock);
+    close(sock->getFd());
+    delete sock;
+    delete channel;
+}
 
-void Server::handleReadEvent(int fd)
+void Connection::echo(int fd)
 {
     char buffer[READ_BUFFER];
     while (true)
@@ -60,19 +62,12 @@ void Server::handleReadEvent(int fd)
         else
         {
             std::cout << "Error: something undefined happened!" << std::endl;
-            close(fd);
+            deleteConnectionCallback(sock);
         }
     }
 }
 
-void Server::newConnection(Socket *serv_sock)
+void Connection::setDeleteConnectionCallback(std::function<void(Socket *)> cb)
 {
-    InetAddress *client_addr = new InetAddress();
-    Socket *client_sock = new Socket(serv_sock->accept(client_addr));
-    client_sock->setnonblocking();
-    Channel *client_channel = new Channel(loop, client_sock->getFd());
-    client_channel->enableReading();
-    std::cout << "connected fd " << client_sock->getFd() << ", addr " << inet_ntoa(client_addr->addr.sin_addr) << ", port " << ntohs(client_addr->addr.sin_port) << std::endl;
-    client_channel->setCallback([=]()
-                                { return handleReadEvent(client_channel->getFd()); });
+    deleteConnectionCallback = cb;
 }
