@@ -6,3 +6,20 @@
 
 
 
+【单线程服务器总结】
+
+`InetAddress`封装`sockaddr_in`简化地址的初始化流程。
+
+`Socket`管理`fd`，提供了新的`bind`、`listen`、`accept`、`connect`函数。
+
+`Channel`管理`fd`，维护了监听事件、回调函数、是否被监听。通过回调函数执行任务。
+
+`Epoll`封装`epoll`的`epoll_create1`、`epoll_ctl`、`epoll_wait`函数，将监听到的事件中的`fd`改为`Channel`指针。
+
+`Eventloop`实现了`loop`函数，`Epoll`循环监听获取`Channel`。
+
+`Acceptor`管理`server_socket`，负责处理`client`的连接请求，调用回调函数构造`Connection`对象管理连接。
+
+`Connection`管理`client_socket`，负责处理`client`的写请求，调用回调函数接收`client_socket`发送的数据，进行处理。
+
+`Server`维护一个`EventLoop`、一个`Acceptor`和多个`Connection`。
