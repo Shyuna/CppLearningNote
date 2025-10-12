@@ -10,14 +10,11 @@ class Server
 private:
     EventLoop *loop;
     Acceptor *acceptor;
-    std::map<int, Connection*> connections;
-public:
-    Server(EventLoop*);
-    ~Server();
+    std::map<int, Connection *> connections;
 
-    void handleReadEvent(int);
+public:
+    Server(EventLoop *);
+    ~Server();
     void newConnection(Socket *sock);
     void deleteConnection(Socket *sock);
 };
-
-

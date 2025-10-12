@@ -17,4 +17,3 @@ public:
     void acceptConnection();
     void setNewConnectionCallback(std::function<void(Socket*)>);
 };
-
