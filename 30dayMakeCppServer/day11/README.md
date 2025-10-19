@@ -1,0 +1,9 @@
+- 修改`Channel::enableRead()`函数，将`EPOLLIN`的设置和`EPOLLET`的设置分开。用`Channel::useET`设置`EPOLLET`
+- 将`Acceptor`设置为水平触发，并且不使用线程池。
+- 将`ThreadPool::add`修改为模板函数，可以向线程池中添加接收任意数量类型参数的函数，并且可以用`std::future`得到函数的返回值。
+- `Args&&... args`表示可变参数和完美转发，可以接收任意数量的参数，并保持它的左值右值。
+- 使用`std::result_of<F(Args...)>::type`得到返回值的类型，这里注意是尖括号。
+- 使用`std::packaged_task<>`调用`get_future()`获得`std::future`，尖括号中填写绑定的可调用对象的类型。
+- `std::packaged_task` 是不可拷贝的，只能移动，但 lambda 按值捕获需要可拷贝的类型，所以用 `shared_ptr` 包装。
+- 使用`std::forward<>`转发参数，尖括号中填写参数的类型。
+- 测试程序使用标准库的`getopt`解析命令行选项，设置线程数量和每个线程发送的消息数量。特判当解析到`EOF`时结束循环。

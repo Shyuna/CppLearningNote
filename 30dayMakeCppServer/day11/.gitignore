@@ -1,0 +1,5 @@
+# Default ignored files
+server
+client
+ThreadPoolTest
+.vscode
