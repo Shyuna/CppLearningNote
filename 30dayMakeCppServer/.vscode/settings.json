@@ -78,6 +78,7 @@
         "thread": "cpp",
         "coroutine": "cpp",
         "resumable": "cpp",
-        "future": "cpp"
+        "future": "cpp",
+        "chrono": "cpp"
     }
 }

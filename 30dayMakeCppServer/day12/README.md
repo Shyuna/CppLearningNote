@@ -1,0 +1,6 @@
+- 合并了`Socket`和`InetAddress`
+- 修改`Connection`的`echo`函数，增加`readBuffer->clear();`，避免服务端回复消息时重复发送历史消息
+- 删除了`EventLoop`中的线程池和相关函数
+- 修改`Server.h`将线程池加入其中，增加`subReactors`用于实现分离建立连接和与客户端通信
+- 使用`std::thread::hardware_concurrency();`获取线程数量
+- 将`subReactors`的`loop`函数加入线程池，产生新连接时，将其`channel`随机加入一个`subReactor`中，管理读写事件
