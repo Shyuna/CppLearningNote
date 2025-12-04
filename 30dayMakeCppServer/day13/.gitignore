@@ -1,0 +1,9 @@
+# Default ignored files
+server
+client
+test
+ThreadPoolTest
+.vscode
+build/
+*__pycache__/
+.vscode/settings.json
