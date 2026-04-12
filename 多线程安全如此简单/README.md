@@ -1,6 +1,6 @@
 代码实现了简单的多线程读写。
 
-参考的教程是：[【C++11】多线程安全如此简单_哔哩哔哩_bilibili](https://www.bilibili.com/video/BV1VJ4m1g7Nh?spm_id_from=333.788.videopod.sections&vd_source=679917d9d5376d925f23bae253e6f8d8)
+参考的教程是：[【C++11】多线程安全如此简单](https://www.bilibili.com/video/BV1VJ4m1g7Nh)
 
 可以使用多线程安全的队列mt_queue来实现各种功能：
 
